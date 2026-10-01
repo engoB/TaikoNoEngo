@@ -1,7 +1,7 @@
 {
   "name": "Taiko no Matsuri — Festival de taiko / Taiko Festival",
   "short_name": "Taiko Matsuri",
-  "description": "Jeu de rythme tactile avec trois morceaux originaux / Touch rhythm game with three original songs.",
+  "description": "Jeu de rythme tactile avec huit morceaux originaux / Touch rhythm game with eight original songs.",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

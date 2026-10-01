@@ -8,7 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Taiko Matsuri" />
-  <meta name="description" content="Taiko no Matsuri — jeu de rythme tactile français-anglais avec trois morceaux originaux." />
+  <meta name="application-version" content="1.2.0" />
+  <meta name="description" content="Taiko no Matsuri v1.2 — jeu de rythme tactile français-anglais avec huit morceaux originaux." />
   <title>Taiko no Matsuri</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
@@ -43,18 +44,19 @@
     .crest-drum { width:clamp(52px,7vw,84px); aspect-ratio:1; flex:0 0 auto; display:grid; place-items:center; border:5px solid #fff; border-radius:50%; color:#b8282f; background:#ffd94d; box-shadow:0 6px 0 #842532; font:700 clamp(20px,3vw,32px) Fredoka; }
     .crest h1 { margin:0; font:700 clamp(28px,4.6vw,58px)/.84 Fredoka; letter-spacing:-.055em; text-shadow:0 5px 0 #8b2730; }
     .crest p { margin:9px 0 0; font-size:clamp(10px,1.3vw,15px); font-weight:800; letter-spacing:.08em; }
+    .version-badge { display:inline-block; margin-top:8px; padding:3px 9px; border:2px solid #fff; border-radius:999px; color:#772530; background:#ffd94d; box-shadow:0 3px 0 #842532; font:700 clamp(9px,1vw,12px) Fredoka; letter-spacing:.05em; text-shadow:none; }
     .menu-mascots { position:relative; z-index:1; align-self:end; justify-self:center; width:min(115%,390px); max-height:68%; object-fit:contain; filter:drop-shadow(0 12px 0 #6c233944); animation:dance .8s ease-in-out infinite alternate; }
     .menu-choice { min-width:0; min-height:0; display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:clamp(8px,2vh,16px); padding:clamp(14px,3vh,30px) clamp(16px,3vw,40px); }
     .menu-title { min-width:0; }
     .menu-kicker { color:#9f2e34; font-size:clamp(10px,1.2vw,14px); font-weight:800; letter-spacing:.12em; }
     .menu-title h2 { margin:3px 0 0; color:#552127; font:700 clamp(22px,3.5vw,40px)/1 Fredoka; }
-    .track-grid { min-width:0; min-height:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(8px,1.2vw,14px); }
-    .track-card { position:relative; min-width:0; min-height:0; display:grid; grid-template-rows:auto 1fr auto; place-items:center; gap:5px; padding:clamp(8px,1.8vh,16px) 8px; border:5px solid #fff; border-radius:clamp(18px,2.4vw,28px); text-align:center; cursor:pointer; touch-action:manipulation; overflow:hidden; background:linear-gradient(180deg,#fffef5,#ffe9b1); box-shadow:0 7px 0 #c37b3f,0 12px 22px #7b33322b; }
+    .track-grid { min-width:0; min-height:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); grid-template-rows:repeat(2,minmax(0,1fr)); gap:clamp(7px,1vw,12px); }
+    .track-card { position:relative; min-width:0; min-height:0; display:grid; grid-template-columns:auto minmax(0,1fr); grid-template-rows:1fr auto; align-items:center; gap:3px 7px; padding:clamp(6px,1.1vh,10px) clamp(6px,.9vw,10px); border:4px solid #fff; border-radius:clamp(15px,1.8vw,22px); text-align:left; cursor:pointer; touch-action:manipulation; overflow:hidden; background:linear-gradient(180deg,#fffef5,#ffe9b1); box-shadow:0 5px 0 #c37b3f,0 8px 16px #7b33322b; }
     .track-card::before { content:""; position:absolute; inset:0; opacity:.11; background:repeating-radial-gradient(circle at 0 0,var(--track) 0 4px,transparent 5px 18px); }
     .track-card[aria-pressed="true"] { border-color:#fff; background:linear-gradient(180deg,color-mix(in srgb,var(--track) 34%,white),#fff4c9); box-shadow:0 7px 0 var(--track),0 0 0 5px #703046; transform:translateY(-3px); }
-    .track-medal { position:relative; width:clamp(42px,6.5vw,74px); aspect-ratio:1; display:grid; place-items:center; border:4px solid #fff; border-radius:50%; color:#fff; background:var(--track); box-shadow:0 5px 0 color-mix(in srgb,var(--track) 60%,#421929); font:700 clamp(18px,2.4vw,28px) Fredoka; }
-    .track-card strong { position:relative; align-self:center; display:block; font:700 clamp(13px,1.7vw,20px)/1.05 Fredoka; color:#4d2529; }
-    .track-card small { position:relative; display:block; color:#744843; font-size:clamp(9px,1.1vw,13px); font-weight:800; line-height:1.15; }
+    .track-medal { position:relative; grid-row:1; width:clamp(34px,4.3vw,52px); aspect-ratio:1; display:grid; place-items:center; border:3px solid #fff; border-radius:50%; color:#fff; background:var(--track); box-shadow:0 4px 0 color-mix(in srgb,var(--track) 60%,#421929); font:700 clamp(14px,1.8vw,22px) Fredoka; }
+    .track-card strong { position:relative; grid-row:1; min-width:0; display:block; font:700 clamp(10px,1.25vw,15px)/1.03 Fredoka; color:#4d2529; }
+    .track-card small { position:relative; grid-column:1/-1; display:block; color:#744843; text-align:center; font-size:clamp(8px,.85vw,11px); font-weight:800; line-height:1.05; }
     .start-btn { min-height:clamp(50px,10vh,72px); border:5px solid #fff; border-radius:22px; color:#fff; cursor:pointer; touch-action:manipulation; background:linear-gradient(180deg,#ff704f,#e23a39); box-shadow:0 7px 0 #8c2935,0 0 0 4px #ffd94d; font:700 clamp(18px,2.3vw,27px) Fredoka; text-shadow:0 3px 0 #932d31; }
     .start-btn:active { transform:translateY(5px); box-shadow:0 2px 0 #8c2935,0 0 0 4px #ffd94d; }
 
@@ -141,7 +143,7 @@
       .hud{padding-top:3px;padding-bottom:3px}.stat-value{font-size:20px}.combo{padding:2px 10px}
       .lane-shell{inset:0}.target-halo{width:92px}.note{width:72px}.judge strong{font-size:24px}
       .controls{padding-top:7px;padding-bottom:7px}.pad{border-width:4px;border-radius:22px}.pad::before{width:64px}
-      .menu-choice{padding-top:10px;padding-bottom:10px}.menu-title h2{font-size:24px}.track-card{padding:7px;border-width:4px}.track-medal{width:43px}.start-btn{min-height:48px}
+      .menu-choice{padding-top:8px;padding-bottom:8px;gap:7px}.menu-title h2{font-size:22px}.track-card{padding:5px;border-width:3px}.track-medal{width:32px}.track-card strong{font-size:10px}.track-card small{font-size:8px}.start-btn{min-height:48px}
       .result-main{padding-top:14px;padding-bottom:14px}.result-title{font-size:34px}.result-actions button{min-height:48px}
     }
     @media (max-width:760px) and (orientation:landscape) {
@@ -151,7 +153,7 @@
       .game-brand .mini-drum{display:none}.game-brand strong{font-size:17px}.game-brand small{display:none}
       .song-plate strong{font-size:13px}.song-plate small{font-size:8px}.icon-btn{width:40px;border-width:3px}
       .pad::before{width:64px}
-      .menu-screen{grid-template-columns:28% minmax(0,1fr)}.menu-hero{padding:12px}.crest-drum{display:none}.crest h1{font-size:29px}.crest p{font-size:9px}.menu-choice{padding:10px 14px}.menu-title h2{font-size:21px}.track-card strong{font-size:12px}.track-card small{font-size:8px}
+      .menu-screen{grid-template-columns:28% minmax(0,1fr)}.menu-hero{padding:12px}.crest-drum{display:none}.crest h1{font-size:27px}.crest p{font-size:8px}.version-badge{font-size:8px;padding:2px 6px}.menu-choice{padding:7px 10px}.menu-title h2{font-size:19px}.menu-kicker{font-size:8px}.track-card{gap:2px 4px}.track-card strong{font-size:9px}.track-card small{font-size:8px}
       .result-screen{grid-template-columns:25% minmax(0,1fr)}.result-art{padding:14px}.result-main{padding:12px 18px}.result-tile{border-width:4px}
     }
     @media (orientation:portrait) {
@@ -165,15 +167,20 @@
   <main class="app" aria-label="Jeu de rythme Taiko no Matsuri / Taiko no Matsuri rhythm game">
     <section class="screen menu-screen active" id="menuScreen" aria-labelledby="menuHeading">
       <div class="menu-hero">
-        <div class="crest"><div class="crest-drum" aria-hidden="true">祭</div><div><h1>Taiko no<br />Matsuri</h1><p>FESTIVAL DE RYTHME / RHYTHM FESTIVAL</p></div></div>
+        <div class="crest"><div class="crest-drum" aria-hidden="true">祭</div><div><h1>Taiko no<br />Matsuri</h1><p>FESTIVAL DE RYTHME / RHYTHM FESTIVAL</p><span class="version-badge">VERSION 1.2.0 · BUILD 10</span></div></div>
         <img class="menu-mascots" src="./taiko-mascots.webp" alt="Deux mascottes taiko célèbrent le festival / Two taiko mascots celebrate the festival" />
       </div>
       <div class="menu-choice">
-        <div class="menu-title"><div class="menu-kicker">3 MORCEAUX · 2 TOUCHES / 3 SONGS · 2 TAPS</div><h2 id="menuHeading">Choisissez un rythme / Choose a rhythm</h2></div>
+        <div class="menu-title"><div class="menu-kicker">8 RYTHMES ORIGINAUX · 2 TOUCHES / 8 ORIGINAL GROOVES · 2 TAPS</div><h2 id="menuHeading">Choisissez un rythme / Choose a rhythm</h2></div>
         <div class="track-grid" id="trackGrid">
           <button class="track-card" data-track="moonfire" aria-pressed="true" style="--track:#f45136"><span class="track-medal">日</span><strong>Feu de lune<br />Moonfire</strong><small>Facile / Easy<br />100 BPM</small></button>
           <button class="track-card" data-track="lanterns" aria-pressed="false" style="--track:#19aebb"><span class="track-medal">灯</span><strong>Danse des lanternes<br />Lantern Dance</strong><small>Intermédiaire / Medium<br />122 BPM</small></button>
           <button class="track-card" data-track="rush" aria-pressed="false" style="--track:#9b55d8"><span class="track-medal">祭</span><strong>Turbo matsuri<br />Matsuri Rush</strong><small>Rapide / Fast<br />146 BPM</small></button>
+          <button class="track-card" data-track="neon" aria-pressed="false" style="--track:#ff4f91"><span class="track-medal">光</span><strong>Rallye néon<br />Neon Rally</strong><small>Intermédiaire / Medium<br />105 BPM</small></button>
+          <button class="track-card" data-track="peach" aria-pressed="false" style="--track:#ff8b5b"><span class="track-medal">桃</span><strong>Parade pêche<br />Peach Parade</strong><small>Facile / Easy<br />102 BPM</small></button>
+          <button class="track-card" data-track="oni" aria-pressed="false" style="--track:#713fbd"><span class="track-medal">鬼</span><strong>Circuit oni<br />Oni Circuit</strong><small>Intermédiaire / Medium<br />98 BPM</small></button>
+          <button class="track-card" data-track="hotel" aria-pressed="false" style="--track:#167ca5"><span class="track-medal">宿</span><strong>Ryokan minuit<br />Midnight Ryokan</strong><small>Intermédiaire / Medium<br />103 BPM</small></button>
+          <button class="track-card" data-track="endless" aria-pressed="false" style="--track:#17a66f"><span class="track-medal">続</span><strong>Matsuri sans fin<br />Endless Matsuri</strong><small>Rapide / Fast<br />114 BPM</small></button>
         </div>
         <button class="start-btn" id="startBtn">Commencer en plein écran / Start fullscreen</button>
       </div>
@@ -181,7 +188,7 @@
 
     <section class="screen game-screen" id="gameScreen" aria-label="Partie / Game">
       <header class="topbar">
-        <div class="game-brand"><div class="mini-drum" aria-hidden="true">祭</div><div><strong>Taiko no Matsuri</strong><small>FESTIVAL DE RYTHME / RHYTHM FESTIVAL</small></div></div>
+        <div class="game-brand"><div class="mini-drum" aria-hidden="true">祭</div><div><strong>Taiko no Matsuri</strong><small>V1.2.0 · FESTIVAL DE RYTHME / RHYTHM FESTIVAL</small></div></div>
         <div class="song-plate"><strong id="songName">Feu de lune / Moonfire</strong><small id="songMeta">FACILE / EASY · 100 BPM</small></div>
         <div class="top-actions">
           <button class="icon-btn" id="songsMenuBtn" aria-label="Retour aux morceaux / Back to songs">☰</button>
@@ -230,17 +237,23 @@
 
   <script>
   (() => {
+    const APP_VERSION='1.2.0',BUILD_NUMBER=10;
     const TRACKS = {
       moonfire:{id:'moonfire',fr:'Feu de lune',en:'Moonfire',levelFr:'Facile',levelEn:'Easy',bpm:100,duration:32000,lead:1900,window:110,perfect:38,accent:'#f45136',accent2:'#ffd646',wave:'sine',scale:[261.6,293.7,349.2,392,440],melody:[0,2,3,2,4,3,2,0],loop:8,pattern:[['don',0],['don',2],['ka',4],['don',6],['ka',7]]},
       lanterns:{id:'lanterns',fr:'Danse des lanternes',en:'Lantern Dance',levelFr:'Intermédiaire',levelEn:'Medium',bpm:122,duration:36000,lead:1550,window:92,perfect:32,accent:'#19aebb',accent2:'#ffd646',wave:'triangle',scale:[293.7,349.2,392,440,523.3],melody:[0,1,3,2,4,3,1,2],loop:8,pattern:[['don',0],['ka',1],['don',2],['don',3.5],['ka',4],['ka',5],['don',6],['ka',6.5],['don',7]]},
-      rush:{id:'rush',fr:'Turbo matsuri',en:'Matsuri Rush',levelFr:'Rapide',levelEn:'Fast',bpm:146,duration:40000,lead:1300,window:78,perfect:26,accent:'#9b55d8',accent2:'#ff6d83',wave:'sawtooth',scale:[329.6,392,440,523.3,587.3],melody:[0,2,4,3,2,4,1,3],loop:8,pattern:[['don',0],['don',.5],['ka',1],['don',2],['ka',2.5],['don',3],['ka',4],['ka',4.5],['don',5],['don',5.5],['ka',6],['don',7],['ka',7.5]]}
+      rush:{id:'rush',fr:'Turbo matsuri',en:'Matsuri Rush',levelFr:'Rapide',levelEn:'Fast',bpm:146,duration:40000,lead:1300,window:78,perfect:26,accent:'#9b55d8',accent2:'#ff6d83',wave:'sawtooth',scale:[329.6,392,440,523.3,587.3],melody:[0,2,4,3,2,4,1,3],loop:8,pattern:[['don',0],['don',.5],['ka',1],['don',2],['ka',2.5],['don',3],['ka',4],['ka',4.5],['don',5],['don',5.5],['ka',6],['don',7],['ka',7.5]]},
+      neon:{id:'neon',fr:'Rallye néon',en:'Neon Rally',levelFr:'Intermédiaire',levelEn:'Medium',bpm:105,duration:38000,lead:1700,window:94,perfect:32,accent:'#ff4f91',accent2:'#ffe04d',wave:'triangle',scale:[220,261.6,293.7,329.6,392],melody:[0,2,1,3,2,4,3,1],loop:8,pattern:[['don',0],['ka',1],['don',2],['ka',3],['don',4],['ka',5],['don',6],['ka',7],['ka',7.5]]},
+      peach:{id:'peach',fr:'Parade pêche',en:'Peach Parade',levelFr:'Facile',levelEn:'Easy',bpm:102,duration:36000,lead:1800,window:104,perfect:36,accent:'#ff8b5b',accent2:'#ffe36b',wave:'sine',scale:[246.9,293.7,329.6,370,440],melody:[0,1,3,2,1,4,3,1],loop:8,pattern:[['don',0],['ka',1],['don',2],['ka',3],['don',4],['ka',5],['don',6],['ka',7]]},
+      oni:{id:'oni',fr:'Circuit oni',en:'Oni Circuit',levelFr:'Intermédiaire',levelEn:'Medium',bpm:98,duration:39000,lead:1750,window:90,perfect:30,accent:'#713fbd',accent2:'#ff6d83',wave:'sawtooth',scale:[196,233.1,261.6,311.1,349.2],melody:[0,3,2,4,1,3,2,0],loop:8,pattern:[['don',0],['ka',1],['don',1.5],['ka',3],['don',4],['don',5.5],['ka',6],['ka',7.5]]},
+      hotel:{id:'hotel',fr:'Ryokan minuit',en:'Midnight Ryokan',levelFr:'Intermédiaire',levelEn:'Medium',bpm:103,duration:38000,lead:1750,window:92,perfect:31,accent:'#167ca5',accent2:'#64e0d4',wave:'triangle',scale:[207.7,246.9,277.2,311.1,415.3],melody:[0,2,4,2,1,3,2,1],loop:8,pattern:[['don',0],['ka',2],['don',4],['ka',5],['don',6],['ka',7.5]]},
+      endless:{id:'endless',fr:'Matsuri sans fin',en:'Endless Matsuri',levelFr:'Rapide',levelEn:'Fast',bpm:114,duration:42000,lead:1550,window:84,perfect:28,accent:'#17a66f',accent2:'#ffe04d',wave:'triangle',scale:[293.7,349.2,392,440,523.3],melody:[0,2,3,1,4,3,2,1],loop:8,pattern:[['don',0],['ka',1],['don',2],['ka',3],['don',4],['ka',5],['don',6],['ka',7],['don',7.5]]}
     };
     const $=id=>document.getElementById(id);
     const screens={menu:$('menuScreen'),game:$('gameScreen'),result:$('resultScreen')};
     const lane=$('lane'),judge=$('judge'),scoreEl=$('score'),comboEl=$('combo'),comboBox=$('comboBox');
     const accuracyEl=$('accuracy'),progressBar=$('progressBar'),soundBtn=$('soundBtn'),songName=$('songName'),songMeta=$('songMeta');
     const pads=[...document.querySelectorAll('.pad')];
-    let selected=TRACKS.moonfire,chart=[],running=false,startTime=0,raf=0,score=0,combo=0,bestCombo=0,judged=0,quality=0,soundOn=true,audio=null,master=null,room=null,noiseBuffer=null,beatIndex=-1,rimSide=1;
+    let selected=TRACKS.moonfire,chart=[],running=false,startTime=0,audioStartTime=0,nextMusicBeat=0,raf=0,score=0,combo=0,bestCombo=0,judged=0,quality=0,soundOn=true,audio=null,master=null,room=null,noiseBuffer=null,rimSide=1;
     const beat=()=>60000/selected.bpm;
 
     function showScreen(name){Object.entries(screens).forEach(([key,el])=>el.classList.toggle('active',key===name));}
@@ -251,7 +264,7 @@
       document.querySelectorAll('.track-card').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.track===selected.id)));
     }
     function makeChart(){
-      const notes=[],offset=1800,B=beat();let block=0;
+      const notes=[],B=beat(),offset=4*B;let block=0;
       while(offset+(block*selected.loop)*B<selected.duration-900){selected.pattern.forEach(([type,b])=>{const time=offset+(block*selected.loop+b)*B;if(time<selected.duration-900)notes.push({type,time,status:'waiting',el:null})});block++;}
       return notes;
     }
@@ -278,36 +291,36 @@
     function noiseBurst(duration,level,frequency,q=1,pan=0,send=.04,when=audio.currentTime){
       const source=audio.createBufferSource(),filter=audio.createBiquadFilter(),gain=audio.createGain();source.buffer=noiseBuffer;filter.type='bandpass';filter.frequency.value=frequency;filter.Q.value=q;gain.gain.setValueAtTime(level,when);gain.gain.exponentialRampToValueAtTime(.0001,when+duration);source.connect(filter);route(filter,gain,pan,send);source.start(when);source.stop(when+duration+.02);
     }
-    function drum(type,soft=false){
-      if(!soundOn)return;ensureAudio();const now=audio.currentTime+.001,mix=soft?.2:1;
+    function drum(type,soft=false,scheduledTime=null){
+      if(!soundOn)return;ensureAudio();const now=scheduledTime===null?audio.currentTime+.001:Math.max(scheduledTime,audio.currentTime+.003),mix=soft?.2:1;
       if(type==='don'){
         tone(168,54,.31,.48*mix,'sine',0,.09,1150,now);tone(292,92,.17,.15*mix,'triangle',0,.07,1600,now);noiseBurst(.05,.12*mix,720,.75,0,.05,now);
       }else{
         rimSide*=-1;const pan=rimSide*.2;tone(760,310,.085,.17*mix,'triangle',pan,.035,3600,now);tone(1680,920,.038,.065*mix,'sine',pan,.02,5200,now);noiseBurst(.09,.28*mix,2450,.9,pan,.05,now);
       }
     }
-    function musicBeat(index){
-      if(!soundOn)return;ensureAudio();const now=audio.currentTime+.004,step=selected.melody[index%selected.melody.length],note=selected.scale[step],fast=selected.id==='rush',beatSeconds=60/selected.bpm;
+    function musicBeat(index,scheduledTime){
+      if(!soundOn)return;ensureAudio();const now=Math.max(scheduledTime,audio.currentTime+.003),step=selected.melody[index%selected.melody.length],note=selected.scale[step],fast=selected.bpm>=114,beatSeconds=60/selected.bpm;
       tone(note,note*.985,fast?.18:.29,fast?.035:.05,selected.wave,(index%2?.12:-.12),.14,fast?1900:2600,now);
       tone(note*2,note*1.98,.12,fast?.01:.014,'sine',(index%2?.12:-.12),.16,5000,now+.012);
       if(index%2===0)tone(selected.scale[selected.melody[(index/2)%selected.melody.length]]/2,selected.scale[0]/2,beatSeconds*.78,.07,selected.id==='lanterns'?'triangle':'sine',-.08,.08,900,now);
       noiseBurst(.045,fast?.026:.018,6200,.7,index%2?.28:-.28,.02,now);
-      if(index%4===0){drum('don',true);tone(note*2.01,note*2,.42,.018,'sine',.25,.2,6200,now+.025);}
+      if(index%4===0){drum('don',true,now);tone(note*2.01,note*2,.42,.018,'sine',.25,.2,6200,now+.025);}
       if(index%8===0){tone(selected.scale[0],selected.scale[0]*.998,beatSeconds*3.3,.012,'sine',-.35,.2,1500,now);tone(selected.scale[2],selected.scale[2]*.998,beatSeconds*3.3,.009,'sine',.35,.2,1500,now);}
     }
     function reset(){
-      cancelAnimationFrame(raf);lane.querySelectorAll('.note').forEach(note=>note.remove());chart=makeChart();running=false;score=combo=bestCombo=judged=quality=0;beatIndex=-1;
+      cancelAnimationFrame(raf);lane.querySelectorAll('.note').forEach(note=>note.remove());chart=makeChart();running=false;score=combo=bestCombo=judged=quality=0;nextMusicBeat=0;
       scoreEl.textContent='000000';comboEl.textContent='0';accuracyEl.textContent='100%';progressBar.style.width='0%';
     }
     async function enterLandscape(){
       try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen({navigationUI:'hide'});}catch{}
       try{if(screen.orientation?.lock)await screen.orientation.lock('landscape');}catch{}
     }
-    function startGame(){reset();ensureAudio();showScreen('game');running=true;startTime=performance.now()+650;enterLandscape();raf=requestAnimationFrame(loop);}
+    function startGame(){reset();ensureAudio();showScreen('game');running=true;const delay=.65;startTime=performance.now()+delay*1000;audioStartTime=audio.currentTime+delay;enterLandscape();raf=requestAnimationFrame(loop);}
     function spawn(note){const el=document.createElement('div');el.className='note '+note.type;el.setAttribute('aria-hidden','true');lane.appendChild(el);note.el=el;note.status='active';}
     function loop(now){
       if(!running)return;const elapsed=now-startTime,rect=lane.getBoundingClientRect(),hitX=rect.width*(innerWidth<=760?.14:.15),spawnX=rect.width+70,B=beat();
-      const currentBeat=Math.floor(Math.max(0,elapsed)/B);if(currentBeat!==beatIndex){beatIndex=currentBeat;if(elapsed>0)musicBeat(currentBeat);}
+      while(nextMusicBeat*B-elapsed<=140&&nextMusicBeat*B<selected.duration){musicBeat(nextMusicBeat,audioStartTime+nextMusicBeat*B/1000);nextMusicBeat++;}
       chart.forEach(note=>{
         const until=note.time-elapsed;
         if(note.status==='waiting'&&until<=selected.lead)spawn(note);
@@ -349,7 +362,7 @@
     pads.forEach(pad=>{pad.addEventListener('pointerdown',event=>{event.preventDefault();pressPad(pad.dataset.hit)},{passive:false});pad.addEventListener('click',event=>{if(event.detail===0)pressPad(pad.dataset.hit)});});
     soundBtn.addEventListener('click',()=>{soundOn=!soundOn;soundBtn.textContent=soundOn?'♪':'×';soundBtn.setAttribute('aria-pressed',String(!soundOn));soundBtn.setAttribute('aria-label',soundOn?'Couper le son / Mute sound':'Activer le son / Enable sound');});
     document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){running=false;cancelAnimationFrame(raf);showScreen('menu');reset();}});
-    window.taikoGame={start:startGame,hit,selectTrack,status:()=>({running,track:selected.id,score:Math.round(score),combo,bestCombo,accuracy:Number((judged?quality/judged*100:100).toFixed(1))})};
+    window.taikoGame={start:startGame,hit,selectTrack,status:()=>({version:APP_VERSION,build:BUILD_NUMBER,running,track:selected.id,score:Math.round(score),combo,bestCombo,accuracy:Number((judged?quality/judged*100:100).toFixed(1))})};
     const context=document.modelContext;if(context?.registerTool){const lifecycle=new AbortController();
       Promise.resolve(context.registerTool({name:'start_rhythm_game',title:'Commencer le jeu / Start game',description:'Commence ou recommence le morceau sélectionné / Starts or restarts the selected song.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(){startGame();return window.taikoGame.status();}},{signal:lifecycle.signal})).catch(()=>{});
       Promise.resolve(context.registerTool({name:'read_rhythm_score',title:'Lire le score / Read score',description:'Lit le morceau, le score, la série et la précision / Reads the song, score, combo and accuracy.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:false},execute(){return window.taikoGame.status();}},{signal:lifecycle.signal})).catch(()=>{});

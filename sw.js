@@ -1,7 +1,8 @@
-const CACHE = 'taiko-matsuri-v9';
+const CACHE = 'taiko-matsuri-v10-1.2.0';
 const ASSETS = [
   './',
   './index.html',
+  './version.json',
   './manifest.webmanifest',
   './matsuri-kawaii-bg.webp',
   './taiko-mascots.webp',

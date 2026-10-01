@@ -1,0 +1,8 @@
+{
+  "name": "Taiko no Matsuri",
+  "version": "1.2.0",
+  "build": 10,
+  "released": "2026-10-01",
+  "songs": 8,
+  "audio_engine": "scheduled-web-audio-v2"
+}

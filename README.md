@@ -7,7 +7,7 @@ Jeu de rythme taiko tactile, bilingue français / anglais, pensé pour une PWA e
 ## Points forts
 
 - Deux zones tactiles seulement : bord bleu et centre rouge.
-- Trois morceaux originaux avec difficultés et rythmes distincts.
+- Huit morceaux originaux avec difficultés et rythmes distincts.
 - Jugement précis : Parfait, Bien, tôt, tard et manqué.
 - Percussions Web Audio multicouches et accompagnement généré en temps réel.
 - Interface kawaii japonaise, jauge segmentée nette et notes traversant la cible.
@@ -23,4 +23,4 @@ Les graphismes, les rythmes et les sons procéduraux de ce projet sont originaux
 
 ---
 
-Touch-first taiko rhythm game in French and English, designed as a landscape fullscreen PWA. It includes two drum zones, three original songs, precise timing grades, layered procedural percussion and offline support.
+Touch-first taiko rhythm game in French and English, designed as a landscape fullscreen PWA. Version 1.2.0 includes two drum zones, eight original songs, precise timing grades, scheduled procedural percussion and offline support.
