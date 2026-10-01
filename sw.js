@@ -1,4 +1,4 @@
-const CACHE = 'taiko-matsuri-v8';
+const CACHE = 'taiko-matsuri-v9';
 const ASSETS = [
   './',
   './index.html',
