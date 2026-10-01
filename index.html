@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#f45136" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Taiko Matsuri" />
+  <meta name="description" content="Taiko no Matsuri — jeu de rythme tactile français-anglais avec trois morceaux originaux." />
+  <title>Taiko no Matsuri</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="./icon-192.png" />
+  <style>
+    :root {
+      --ink:#351c20; --cream:#fff6d7; --paper:#fffbed; --orange:#f45136; --yellow:#ffd94d;
+      --red:#ef453d; --blue:#25bfd0; --plum:#78263d; --accent:#f45136; --accent2:#ffd646;
+      --hit-x:18%;
+    }
+    * { box-sizing:border-box; }
+    html,body { margin:0; width:100%; height:100%; overflow:hidden; overscroll-behavior:none; background:#1e1218; color:var(--ink); font-family:Outfit,system-ui,sans-serif; }
+    button { color:inherit; font:inherit; -webkit-tap-highlight-color:transparent; }
+    button:focus-visible { outline:5px solid #17376b; outline-offset:3px; }
+    .app { width:100vw; height:100dvh; min-width:0; min-height:0; overflow:hidden; isolation:isolate; background:#ffc95b; }
+    .screen { display:none; width:100%; height:100%; min-width:0; min-height:0; overflow:hidden; }
+    .screen.active { display:grid; }
+    .rotate-screen { display:none; position:fixed; inset:0; z-index:100; place-items:center; padding:24px; text-align:center; background:linear-gradient(145deg,#ff704e,#ffd94d 55%,#28bfd0); }
+    .rotate-card { width:min(92vw,460px); padding:28px; border:6px solid #fff; border-radius:32px; background:#fff8df; box-shadow:0 10px 0 #8a2934; }
+    .rotate-icon { display:block; font-size:64px; animation:turn 1.4s ease-in-out infinite alternate; }
+    .rotate-card strong { display:block; margin-top:12px; font:700 28px/1 Fredoka; color:#d83c36; }
+    .rotate-card span { display:block; margin-top:8px; font-weight:800; color:#71443e; }
+
+    .menu-screen { grid-template-columns:minmax(220px,34%) minmax(0,1fr); background:linear-gradient(120deg,rgba(255,90,60,.92),rgba(255,212,73,.91) 48%,rgba(43,195,211,.9)),url('./matsuri-kawaii-bg.webp') center/cover; }
+    .menu-hero { position:relative; display:grid; grid-template-rows:auto minmax(0,1fr); min-height:0; padding:clamp(14px,3vh,28px); color:#fff; background:linear-gradient(160deg,#d93639ee,#f45f3bdd); border-right:8px solid #fff1c1; overflow:hidden; }
+    .menu-hero::before,.menu-hero::after { content:""; position:absolute; width:180px; height:180px; border:16px solid #ffd84d55; border-radius:50%; }
+    .menu-hero::before { right:-100px; top:-92px; }.menu-hero::after { left:-110px; bottom:-115px; }
+    .crest { position:relative; z-index:1; display:flex; align-items:center; gap:12px; }
+    .crest-drum { width:clamp(52px,7vw,84px); aspect-ratio:1; flex:0 0 auto; display:grid; place-items:center; border:5px solid #fff; border-radius:50%; color:#b8282f; background:#ffd94d; box-shadow:0 6px 0 #842532; font:700 clamp(20px,3vw,32px) Fredoka; }
+    .crest h1 { margin:0; font:700 clamp(28px,4.6vw,58px)/.84 Fredoka; letter-spacing:-.055em; text-shadow:0 5px 0 #8b2730; }
+    .crest p { margin:9px 0 0; font-size:clamp(10px,1.3vw,15px); font-weight:800; letter-spacing:.08em; }
+    .menu-mascots { position:relative; z-index:1; align-self:end; justify-self:center; width:min(115%,390px); max-height:68%; object-fit:contain; filter:drop-shadow(0 12px 0 #6c233944); animation:dance .8s ease-in-out infinite alternate; }
+    .menu-choice { min-width:0; min-height:0; display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:clamp(8px,2vh,16px); padding:clamp(14px,3vh,30px) clamp(16px,3vw,40px); }
+    .menu-title { min-width:0; }
+    .menu-kicker { color:#9f2e34; font-size:clamp(10px,1.2vw,14px); font-weight:800; letter-spacing:.12em; }
+    .menu-title h2 { margin:3px 0 0; color:#552127; font:700 clamp(22px,3.5vw,40px)/1 Fredoka; }
+    .track-grid { min-width:0; min-height:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(8px,1.2vw,14px); }
+    .track-card { position:relative; min-width:0; min-height:0; display:grid; grid-template-rows:auto 1fr auto; place-items:center; gap:5px; padding:clamp(8px,1.8vh,16px) 8px; border:5px solid #fff; border-radius:clamp(18px,2.4vw,28px); text-align:center; cursor:pointer; touch-action:manipulation; overflow:hidden; background:linear-gradient(180deg,#fffef5,#ffe9b1); box-shadow:0 7px 0 #c37b3f,0 12px 22px #7b33322b; }
+    .track-card::before { content:""; position:absolute; inset:0; opacity:.11; background:repeating-radial-gradient(circle at 0 0,var(--track) 0 4px,transparent 5px 18px); }
+    .track-card[aria-pressed="true"] { border-color:#fff; background:linear-gradient(180deg,color-mix(in srgb,var(--track) 34%,white),#fff4c9); box-shadow:0 7px 0 var(--track),0 0 0 5px #703046; transform:translateY(-3px); }
+    .track-medal { position:relative; width:clamp(42px,6.5vw,74px); aspect-ratio:1; display:grid; place-items:center; border:4px solid #fff; border-radius:50%; color:#fff; background:var(--track); box-shadow:0 5px 0 color-mix(in srgb,var(--track) 60%,#421929); font:700 clamp(18px,2.4vw,28px) Fredoka; }
+    .track-card strong { position:relative; align-self:center; display:block; font:700 clamp(13px,1.7vw,20px)/1.05 Fredoka; color:#4d2529; }
+    .track-card small { position:relative; display:block; color:#744843; font-size:clamp(9px,1.1vw,13px); font-weight:800; line-height:1.15; }
+    .start-btn { min-height:clamp(50px,10vh,72px); border:5px solid #fff; border-radius:22px; color:#fff; cursor:pointer; touch-action:manipulation; background:linear-gradient(180deg,#ff704f,#e23a39); box-shadow:0 7px 0 #8c2935,0 0 0 4px #ffd94d; font:700 clamp(18px,2.3vw,27px) Fredoka; text-shadow:0 3px 0 #932d31; }
+    .start-btn:active { transform:translateY(5px); box-shadow:0 2px 0 #8c2935,0 0 0 4px #ffd94d; }
+
+    .game-screen { grid-template-rows:clamp(62px,11vh,78px) clamp(52px,9vh,64px) minmax(0,1fr) clamp(100px,19vh,116px); background:#f6b84b; }
+    .topbar { min-width:0; display:grid; grid-template-columns:minmax(190px,1fr) minmax(250px,1.3fr) auto; align-items:center; gap:clamp(8px,2vw,22px); padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left)); color:#fff; background-color:#e84d36; background-image:radial-gradient(circle at 12px 100%,transparent 0 14px,#ff743c 15px 18px,transparent 19px); background-size:58px 34px; border-bottom:5px solid #fff0bd; box-shadow:0 5px 0 #8e2930; z-index:5; }
+    .game-brand { min-width:0; display:flex; align-items:center; gap:9px; }
+    .game-brand .mini-drum { width:clamp(40px,5.6vw,58px); aspect-ratio:1; flex:0 0 auto; display:grid; place-items:center; border:4px solid #fff; border-radius:50%; color:#b52d30; background:#ffd94d; box-shadow:0 4px 0 #912931; font:700 20px Fredoka; }
+    .game-brand strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:700 clamp(18px,2.8vw,31px)/1 Fredoka; text-shadow:0 3px 0 #8f2b2c; }
+    .game-brand small { display:block; margin-top:2px; font-size:clamp(8px,1vw,11px); font-weight:800; letter-spacing:.08em; white-space:nowrap; }
+    .song-plate { min-width:0; padding:5px 13px; border:4px solid #fff; border-radius:18px; color:#481e25; text-align:center; background:#ffd94d; box-shadow:0 5px 0 #b8732f; }
+    .song-plate strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:700 clamp(14px,1.8vw,20px)/1 Fredoka; }
+    .song-plate small { display:block; margin-top:2px; font-size:clamp(8px,1vw,11px); font-weight:800; white-space:nowrap; }
+    .top-actions { display:flex; gap:8px; }
+    .icon-btn { width:clamp(42px,5.3vw,54px); aspect-ratio:1; border:4px solid #fff; border-radius:50%; color:#9a2b32; cursor:pointer; touch-action:manipulation; background:#fff3ca; box-shadow:0 4px 0 #8d2c33; font-size:clamp(17px,2.2vw,23px); }
+    .hud { min-width:0; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:clamp(12px,2vw,26px); padding:8px max(20px,4vw); background:linear-gradient(90deg,#fff6d9,#fffdf2,#fff6d9); border-bottom:4px solid #e5903f; z-index:4; }
+    .stat { min-width:0; display:flex; flex-direction:column; }
+    .stat:last-child { align-items:flex-end; }
+    .stat-label { color:#7e4c42; font-size:clamp(10px,1.05vw,13px); font-weight:800; letter-spacing:.07em; white-space:nowrap; }
+    .stat-value { color:#2d1a20; font:700 clamp(24px,3vw,34px)/.9 Fredoka; font-variant-numeric:tabular-nums; }
+    .combo { min-width:clamp(96px,14vw,150px); padding:4px 14px; align-items:center; border:3px solid #fff; border-radius:999px; color:#fff; background:linear-gradient(180deg,#ff7954,#e83c3a); box-shadow:0 4px 0 #942b36; }
+    .combo .stat-label,.combo .stat-value { color:#fff; text-shadow:0 2px 0 #952b33; }
+    .combo.bump { animation:bump .16s ease-out; }
+    .playfield { position:relative; min-width:0; min-height:0; overflow:hidden; background:#2d2729; }
+    .playfield::before { content:""; position:absolute; inset:0; background:linear-gradient(180deg,#ffb93a11,#5b1b374a); }
+    .lane-shell { position:absolute; z-index:3; inset:0; border-top:7px solid #fff1be; border-bottom:7px solid #fff1be; background:#2d2729; box-shadow:inset 0 8px 0 #6e2231,inset 0 -8px 0 #6e2231; }
+    .lane-shell::before { content:""; position:absolute; inset:0; opacity:.19; background-image:linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%),linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%); background-size:24px 24px; background-position:0 0,12px 12px; }
+    .gauge { position:absolute; z-index:8; left:6%; right:3%; top:12px; height:14px; border:3px solid #171113; border-radius:999px; overflow:hidden; background:#1e181a; }
+    .gauge i { display:block; height:100%; width:0; background:repeating-linear-gradient(90deg,#5be7b8 0 12px,#22bd91 13px 17px); box-shadow:0 0 10px #5ff0bf; }
+    .lane { position:absolute; inset:0; overflow:hidden; }
+    .lane::after { content:""; position:absolute; left:0; right:0; top:55%; height:3px; background:#fff2; }
+    .target-halo { position:absolute; z-index:5; left:var(--hit-x); top:55%; width:clamp(88px,9vw,112px); aspect-ratio:1; transform:translate(-50%,-50%); border:8px solid #fff; border-radius:50%; background:radial-gradient(circle,#ff8a70 0 30%,#ffd69f 31% 55%,#e5483e 56% 69%,#fff0c5 70%); box-shadow:0 0 0 8px #a72d34,0 6px 0 10px #551b2d,0 0 28px #ffd54e; }
+    .target-halo::after { content:""; position:absolute; inset:-18px; border:3px dashed #ffd84a; border-radius:50%; animation:spin 5s linear infinite; }
+    .note { position:absolute; z-index:6; left:0; top:55%; width:clamp(68px,7.2vw,88px); aspect-ratio:1; border:7px solid #fff; border-radius:50%; transform:translate3d(110vw,-50%,0) translateX(-50%); will-change:transform; box-shadow:0 5px 0 #181012,0 8px 16px #0009; }
+    .note.don { background:radial-gradient(circle at 34% 27%,#ffb6a0,#ef493d 52%,#ae2530); }
+    .note.ka { background:radial-gradient(circle at 34% 27%,#d0fff7,#35cbd5 52%,#087c92); }
+    .note::after { content:""; position:absolute; inset:28%; border:3px solid #ffffff91; border-radius:50%; }
+    .note.hit { animation:noteHitGlow .36s ease-out; }
+    .note.missed { opacity:.58; filter:saturate(.45) brightness(.78); }
+    .judge { position:absolute; z-index:12; left:var(--hit-x); top:55%; transform:translate(-50%,-50%); opacity:0; pointer-events:none; text-align:center; }
+    .judge strong { display:block; white-space:nowrap; font:700 clamp(19px,3.3vw,38px)/.92 Fredoka; -webkit-text-stroke:5px #6f2130; paint-order:stroke fill; text-shadow:0 5px 0 #40132355; }
+    .judge small { display:inline-block; margin-top:8px; padding:4px 11px; border:3px solid #fff; border-radius:999px; color:#54242a; background:#fff3cf; font-size:clamp(11px,1.05vw,13px); font-weight:800; box-shadow:0 3px 0 #7d2934; white-space:nowrap; }
+    .judge.perfect strong { color:#ffe03f; }.judge.good strong { color:#7cf4e4; }.judge.miss strong { color:#ff9b9b; }
+    .judge.show { animation:judgePop .58s ease-out; }
+    .mascot-stage { display:none; }
+    .lantern-row { position:absolute; z-index:2; left:0; right:0; bottom:0; height:22px; background:radial-gradient(circle,#fff 0 3px,#ffdc4c 4px 7px,transparent 8px) 0 0/38px 22px repeat-x; filter:drop-shadow(0 0 7px #ff6c45); }
+    .controls { min-width:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(18px,3vw,38px); padding:10px max(24px,4vw,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(24px,4vw,env(safe-area-inset-left)); background:linear-gradient(180deg,#f8cb62,#f5a93f); border-top:5px solid #fff1bd; box-shadow:inset 0 6px 0 #b84d36; z-index:6; }
+    .pad { position:relative; min-width:0; min-height:58px; display:grid; place-items:center; padding:4px; border:5px solid #fff; border-radius:28px; color:#fff; cursor:pointer; touch-action:none; user-select:none; -webkit-user-select:none; overflow:hidden; box-shadow:0 6px 0 #72243a,0 9px 18px #53213648; }
+    .pad::before { content:""; position:absolute; left:50%; top:50%; width:clamp(68px,6.8vw,88px); aspect-ratio:1.03; transform:translate(-50%,-50%); background-image:url('./taiko-controls.webp'); background-repeat:no-repeat; background-size:200% 100%; filter:drop-shadow(0 4px 0 #4b183044); }
+    .pad.ka { background:linear-gradient(180deg,#45d9e2,#1199ae); }.pad.don { background:linear-gradient(180deg,#ff765c,#db3439); }
+    .pad.ka::before { background-position:left center; }.pad.don::before { background-position:right center; }
+    .pad.pressed,.pad:active { transform:translateY(5px); box-shadow:0 1px 0 #72243a; filter:brightness(1.08); }
+
+    .result-screen { grid-template-columns:minmax(210px,30%) minmax(0,1fr); background:linear-gradient(120deg,#ff704ee8,#ffd94ee8 52%,#38cbd5e8),url('./matsuri-kawaii-bg.webp') center/cover; }
+    .result-art { min-height:0; display:grid; grid-template-rows:auto minmax(0,1fr); padding:clamp(16px,4vh,34px); color:#fff; background:#bd3342e8; border-right:8px solid #fff0be; }
+    .result-art .eyebrow { font-size:clamp(10px,1.2vw,14px); font-weight:800; letter-spacing:.12em; }
+    .result-art img { align-self:end; width:112%; max-height:80%; object-fit:contain; filter:drop-shadow(0 10px 0 #5f1e3344); }
+    .result-main { min-width:0; min-height:0; display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:clamp(10px,2vh,18px); padding:clamp(18px,4vh,38px) clamp(20px,4vw,54px); }
+    .result-title { margin:0; color:#b92f39; font:700 clamp(30px,5vw,60px)/.95 Fredoka; letter-spacing:-.04em; }
+    .results { min-height:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(8px,1.4vw,16px); }
+    .result-tile { min-width:0; display:grid; place-content:center; padding:8px; border:5px solid #fff; border-radius:24px; text-align:center; background:#fff8df; box-shadow:0 7px 0 #d18d4b; }
+    .result-tile strong { display:block; color:#d83b3a; font:700 clamp(22px,3.6vw,42px)/1 Fredoka; font-variant-numeric:tabular-nums; }
+    .result-tile small { display:block; margin-top:6px; color:#70453f; font-size:clamp(8px,1vw,12px); font-weight:800; line-height:1.1; }
+    .result-actions { display:grid; grid-template-columns:1.25fr 1fr; gap:12px; }
+    .result-actions button { min-height:clamp(50px,10vh,70px); border:5px solid #fff; border-radius:21px; cursor:pointer; touch-action:manipulation; font:700 clamp(14px,1.8vw,21px)/1 Fredoka; }
+    .replay { color:#fff; background:linear-gradient(180deg,#ff704f,#e13a3a); box-shadow:0 6px 0 #8a2935; text-shadow:0 2px 0 #8b2931; }
+    .songs { color:#24505c; background:linear-gradient(180deg,#ddfff8,#77ddd9); box-shadow:0 6px 0 #228998; }
+
+    @keyframes bump { 50%{transform:scale(1.14)} }
+    @keyframes dance { to{transform:translateY(-7px) rotate(1.2deg)} }
+    @keyframes turn { to{transform:rotate(90deg)} }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    @keyframes noteHitGlow { 0%{filter:brightness(1);box-shadow:0 5px 0 #181012,0 8px 16px #0009}45%{filter:brightness(1.65);box-shadow:0 0 0 12px #ffe04d99,0 0 28px #fff}100%{filter:brightness(1);box-shadow:0 5px 0 #181012,0 8px 16px #0009} }
+    @keyframes judgePop { 0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}18%,70%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-105%) scale(.92)} }
+    @media (max-height:650px) and (orientation:landscape) {
+      .game-screen { grid-template-rows:62px 52px minmax(0,1fr) 104px; }
+      .pad::before{width:74px}
+    }
+    @media (max-height:500px) and (orientation:landscape) {
+      .game-screen { grid-template-rows:58px 48px minmax(0,1fr) 90px; }
+      .topbar { padding-top:4px;padding-bottom:4px;border-bottom-width:4px; }
+      .game-brand .mini-drum { width:42px; }.game-brand strong{font-size:18px}.game-brand small{display:none}
+      .song-plate{padding:4px 10px}.song-plate strong{font-size:14px}
+      .hud{padding-top:3px;padding-bottom:3px}.stat-value{font-size:20px}.combo{padding:2px 10px}
+      .lane-shell{inset:0}.target-halo{width:92px}.note{width:72px}.judge strong{font-size:24px}
+      .controls{padding-top:7px;padding-bottom:7px}.pad{border-width:4px;border-radius:22px}.pad::before{width:64px}
+      .menu-choice{padding-top:10px;padding-bottom:10px}.menu-title h2{font-size:24px}.track-card{padding:7px;border-width:4px}.track-medal{width:43px}.start-btn{min-height:48px}
+      .result-main{padding-top:14px;padding-bottom:14px}.result-title{font-size:34px}.result-actions button{min-height:48px}
+    }
+    @media (max-width:760px) and (orientation:landscape) {
+      :root{--hit-x:17%;}
+      .game-screen{grid-template-rows:58px 48px minmax(0,1fr) 90px}
+      .topbar{grid-template-columns:minmax(120px,.9fr) minmax(170px,1.2fr) auto;gap:6px}
+      .game-brand .mini-drum{display:none}.game-brand strong{font-size:17px}.game-brand small{display:none}
+      .song-plate strong{font-size:13px}.song-plate small{font-size:8px}.icon-btn{width:40px;border-width:3px}
+      .pad::before{width:64px}
+      .menu-screen{grid-template-columns:28% minmax(0,1fr)}.menu-hero{padding:12px}.crest-drum{display:none}.crest h1{font-size:29px}.crest p{font-size:9px}.menu-choice{padding:10px 14px}.menu-title h2{font-size:21px}.track-card strong{font-size:12px}.track-card small{font-size:8px}
+      .result-screen{grid-template-columns:25% minmax(0,1fr)}.result-art{padding:14px}.result-main{padding:12px 18px}.result-tile{border-width:4px}
+    }
+    @media (orientation:portrait) {
+      .rotate-screen { display:grid; }
+      .screen { display:none!important; }
+    }
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="Jeu de rythme Taiko no Matsuri / Taiko no Matsuri rhythm game">
+    <section class="screen menu-screen active" id="menuScreen" aria-labelledby="menuHeading">
+      <div class="menu-hero">
+        <div class="crest"><div class="crest-drum" aria-hidden="true">祭</div><div><h1>Taiko no<br />Matsuri</h1><p>FESTIVAL DE RYTHME / RHYTHM FESTIVAL</p></div></div>
+        <img class="menu-mascots" src="./taiko-mascots.webp" alt="Deux mascottes taiko célèbrent le festival / Two taiko mascots celebrate the festival" />
+      </div>
+      <div class="menu-choice">
+        <div class="menu-title"><div class="menu-kicker">3 MORCEAUX · 2 TOUCHES / 3 SONGS · 2 TAPS</div><h2 id="menuHeading">Choisissez un rythme / Choose a rhythm</h2></div>
+        <div class="track-grid" id="trackGrid">
+          <button class="track-card" data-track="moonfire" aria-pressed="true" style="--track:#f45136"><span class="track-medal">日</span><strong>Feu de lune<br />Moonfire</strong><small>Facile / Easy<br />100 BPM</small></button>
+          <button class="track-card" data-track="lanterns" aria-pressed="false" style="--track:#19aebb"><span class="track-medal">灯</span><strong>Danse des lanternes<br />Lantern Dance</strong><small>Intermédiaire / Medium<br />122 BPM</small></button>
+          <button class="track-card" data-track="rush" aria-pressed="false" style="--track:#9b55d8"><span class="track-medal">祭</span><strong>Turbo matsuri<br />Matsuri Rush</strong><small>Rapide / Fast<br />146 BPM</small></button>
+        </div>
+        <button class="start-btn" id="startBtn">Commencer en plein écran / Start fullscreen</button>
+      </div>
+    </section>
+
+    <section class="screen game-screen" id="gameScreen" aria-label="Partie / Game">
+      <header class="topbar">
+        <div class="game-brand"><div class="mini-drum" aria-hidden="true">祭</div><div><strong>Taiko no Matsuri</strong><small>FESTIVAL DE RYTHME / RHYTHM FESTIVAL</small></div></div>
+        <div class="song-plate"><strong id="songName">Feu de lune / Moonfire</strong><small id="songMeta">FACILE / EASY · 100 BPM</small></div>
+        <div class="top-actions">
+          <button class="icon-btn" id="songsMenuBtn" aria-label="Retour aux morceaux / Back to songs">☰</button>
+          <button class="icon-btn" id="soundBtn" aria-label="Couper le son / Mute sound" aria-pressed="false">♪</button>
+        </div>
+      </header>
+      <section class="hud" aria-label="Statistiques / Game statistics">
+        <div class="stat"><span class="stat-label">SCORE</span><span class="stat-value" id="score">000000</span></div>
+        <div class="stat combo" id="comboBox"><span class="stat-value" id="combo">0</span><span class="stat-label">SÉRIE / COMBO</span></div>
+        <div class="stat"><span class="stat-label">PRÉCISION / ACCURACY</span><span class="stat-value" id="accuracy">100%</span></div>
+      </section>
+      <section class="playfield">
+        <img class="mascot-stage" src="./taiko-mascots.webp" alt="" />
+        <div class="lane-shell">
+          <div class="gauge" aria-hidden="true"><i id="progressBar"></i></div>
+          <div class="lane" id="lane">
+            <div class="target-halo" aria-label="Zone de frappe / Hit zone"></div>
+            <div class="judge" id="judge" role="status" aria-live="polite"><strong>PARFAIT / PERFECT</strong><small>+1000</small></div>
+          </div>
+        </div>
+        <div class="lantern-row" aria-hidden="true"></div>
+      </section>
+      <section class="controls" aria-label="Contrôles tactiles / Touch controls">
+        <button class="pad ka" data-hit="ka" aria-label="Frapper le bord bleu / Hit the blue rim"></button>
+        <button class="pad don" data-hit="don" aria-label="Frapper le centre rouge / Hit the red center"></button>
+      </section>
+    </section>
+
+    <section class="screen result-screen" id="resultScreen" aria-labelledby="resultTitle">
+      <div class="result-art"><div class="eyebrow">MORCEAU TERMINÉ / SONG COMPLETE</div><img src="./taiko-mascots.webp" alt="" /></div>
+      <div class="result-main">
+        <h2 class="result-title" id="resultTitle">Bravo / Well done!</h2>
+        <div class="results">
+          <div class="result-tile"><strong id="finalScore">0</strong><small>SCORE</small></div>
+          <div class="result-tile"><strong id="finalCombo">0</strong><small>MEILLEURE SÉRIE<br />BEST COMBO</small></div>
+          <div class="result-tile"><strong id="finalAccuracy">0%</strong><small>PRÉCISION<br />ACCURACY</small></div>
+        </div>
+        <div class="result-actions"><button class="replay" id="replayBtn">Rejouer / Play again</button><button class="songs" id="songsBtn">Autres morceaux / Other songs</button></div>
+      </div>
+    </section>
+  </main>
+
+  <section class="rotate-screen" aria-live="polite">
+    <div class="rotate-card"><span class="rotate-icon" aria-hidden="true">↻</span><strong>Tournez l’écran / Rotate your screen</strong><span>Le festival se joue en paysage / The festival plays in landscape</span></div>
+  </section>
+
+  <script>
+  (() => {
+    const TRACKS = {
+      moonfire:{id:'moonfire',fr:'Feu de lune',en:'Moonfire',levelFr:'Facile',levelEn:'Easy',bpm:100,duration:32000,lead:1900,window:110,perfect:38,accent:'#f45136',accent2:'#ffd646',wave:'sine',scale:[261.6,293.7,349.2,392,440],melody:[0,2,3,2,4,3,2,0],loop:8,pattern:[['don',0],['don',2],['ka',4],['don',6],['ka',7]]},
+      lanterns:{id:'lanterns',fr:'Danse des lanternes',en:'Lantern Dance',levelFr:'Intermédiaire',levelEn:'Medium',bpm:122,duration:36000,lead:1550,window:92,perfect:32,accent:'#19aebb',accent2:'#ffd646',wave:'triangle',scale:[293.7,349.2,392,440,523.3],melody:[0,1,3,2,4,3,1,2],loop:8,pattern:[['don',0],['ka',1],['don',2],['don',3.5],['ka',4],['ka',5],['don',6],['ka',6.5],['don',7]]},
+      rush:{id:'rush',fr:'Turbo matsuri',en:'Matsuri Rush',levelFr:'Rapide',levelEn:'Fast',bpm:146,duration:40000,lead:1300,window:78,perfect:26,accent:'#9b55d8',accent2:'#ff6d83',wave:'square',scale:[329.6,392,440,523.3,587.3],melody:[0,2,4,3,2,4,1,3],loop:8,pattern:[['don',0],['don',.5],['ka',1],['don',2],['ka',2.5],['don',3],['ka',4],['ka',4.5],['don',5],['don',5.5],['ka',6],['don',7],['ka',7.5]]}
+    };
+    const $=id=>document.getElementById(id);
+    const screens={menu:$('menuScreen'),game:$('gameScreen'),result:$('resultScreen')};
+    const lane=$('lane'),judge=$('judge'),scoreEl=$('score'),comboEl=$('combo'),comboBox=$('comboBox');
+    const accuracyEl=$('accuracy'),progressBar=$('progressBar'),soundBtn=$('soundBtn'),songName=$('songName'),songMeta=$('songMeta');
+    const pads=[...document.querySelectorAll('.pad')];
+    let selected=TRACKS.moonfire,chart=[],running=false,startTime=0,raf=0,score=0,combo=0,bestCombo=0,judged=0,quality=0,soundOn=true,audio=null,beatIndex=-1;
+    const beat=()=>60000/selected.bpm;
+
+    function showScreen(name){Object.entries(screens).forEach(([key,el])=>el.classList.toggle('active',key===name));}
+    function selectTrack(id){
+      selected=TRACKS[id]||TRACKS.moonfire;
+      document.documentElement.style.setProperty('--accent',selected.accent);document.documentElement.style.setProperty('--accent2',selected.accent2);
+      songName.textContent=selected.fr+' / '+selected.en;songMeta.textContent=(selected.levelFr+' / '+selected.levelEn+' · '+selected.bpm+' BPM').toUpperCase();
+      document.querySelectorAll('.track-card').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.track===selected.id)));
+    }
+    function makeChart(){
+      const notes=[],offset=1800,B=beat();let block=0;
+      while(offset+(block*selected.loop)*B<selected.duration-900){selected.pattern.forEach(([type,b])=>{const time=offset+(block*selected.loop+b)*B;if(time<selected.duration-900)notes.push({type,time,status:'waiting',el:null})});block++;}
+      return notes;
+    }
+    function ensureAudio(){if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();}
+    function drum(type,soft=false){
+      if(!soundOn)return;ensureAudio();const now=audio.currentTime,o=audio.createOscillator(),g=audio.createGain(),f=audio.createBiquadFilter();
+      o.type=type==='don'?'sine':'triangle';o.frequency.setValueAtTime(type==='don'?145:540,now);o.frequency.exponentialRampToValueAtTime(type==='don'?54:220,now+.11);
+      f.type='lowpass';f.frequency.value=type==='don'?950:1750;g.gain.setValueAtTime(soft?.055:.34,now);g.gain.exponentialRampToValueAtTime(.001,now+(type==='don'?.22:.09));
+      o.connect(f).connect(g).connect(audio.destination);o.start(now);o.stop(now+.24);
+    }
+    function melody(index){
+      if(!soundOn)return;ensureAudio();const now=audio.currentTime,step=selected.melody[index%selected.melody.length],o=audio.createOscillator(),g=audio.createGain();
+      o.type=selected.wave;o.frequency.value=selected.scale[step];g.gain.setValueAtTime(selected.id==='rush'?.03:.045,now);g.gain.exponentialRampToValueAtTime(.001,now+(selected.id==='moonfire'?.38:.22));
+      o.connect(g).connect(audio.destination);o.start(now);o.stop(now+.42);
+    }
+    function reset(){
+      cancelAnimationFrame(raf);lane.querySelectorAll('.note').forEach(note=>note.remove());chart=makeChart();running=false;score=combo=bestCombo=judged=quality=0;beatIndex=-1;
+      scoreEl.textContent='000000';comboEl.textContent='0';accuracyEl.textContent='100%';progressBar.style.width='0%';
+    }
+    async function enterLandscape(){
+      try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen({navigationUI:'hide'});}catch{}
+      try{if(screen.orientation?.lock)await screen.orientation.lock('landscape');}catch{}
+    }
+    function startGame(){reset();ensureAudio();showScreen('game');running=true;startTime=performance.now()+650;enterLandscape();raf=requestAnimationFrame(loop);}
+    function spawn(note){const el=document.createElement('div');el.className='note '+note.type;el.setAttribute('aria-hidden','true');lane.appendChild(el);note.el=el;note.status='active';}
+    function loop(now){
+      if(!running)return;const elapsed=now-startTime,rect=lane.getBoundingClientRect(),hitX=rect.width*(innerWidth<=760?.14:.15),spawnX=rect.width+70,B=beat();
+      const currentBeat=Math.floor(Math.max(0,elapsed)/B);if(currentBeat!==beatIndex){beatIndex=currentBeat;if(elapsed>0){melody(currentBeat);if(currentBeat%4===0)drum('don',true);}}
+      chart.forEach(note=>{
+        const until=note.time-elapsed;
+        if(note.status==='waiting'&&until<=selected.lead)spawn(note);
+        if(['active','hit','miss'].includes(note.status)){
+          const progress=1-until/selected.lead,rawX=spawnX+(hitX-spawnX)*progress;
+          note.el.style.transform='translate3d('+rawX+'px,-50%,0) translateX(-50%)';
+          if(note.status==='active'&&until<-selected.window)miss(note);
+          if(rawX<-100){note.el?.remove();note.status='done';}
+        }
+      });
+      progressBar.style.width=Math.max(0,Math.min(100,elapsed/selected.duration*100))+'%';if(elapsed>selected.duration){finish();return;}raf=requestAnimationFrame(loop);
+    }
+    function hit(type){
+      if(!running)return;drum(type);const elapsed=performance.now()-startTime;
+      const targets=chart.filter(note=>note.status==='active'&&note.type===type).sort((a,b)=>Math.abs(a.time-elapsed)-Math.abs(b.time-elapsed)),note=targets[0];
+      const offset=note?elapsed-note.time:0,delta=Math.abs(offset);
+      if(!note||delta>selected.window){judged++;combo=0;updateHud();flashJudge('MANQUÉ / MISS',note?timingText(offset):'HORS TEMPS / OFF BEAT','miss');return;}
+      note.status='hit';note.el.classList.add('hit');judged++;
+      if(delta<=selected.perfect){const gained=1000+combo*18;score+=gained;combo++;quality+=1;flashJudge('PARFAIT / PERFECT','+'+gained+' · '+Math.round(delta)+' ms','perfect');}
+      else{const gained=500+combo*8;score+=gained;combo++;quality+=.6;flashJudge('BIEN / GOOD','+'+gained+' · '+timingText(offset),'good');}
+      bestCombo=Math.max(bestCombo,combo);updateHud();
+    }
+    function timingText(offset){const ms=Math.round(Math.abs(offset));return(offset<0?'TÔT / EARLY ':'TARD / LATE ')+ms+' ms';}
+    function miss(note){note.status='miss';note.el?.classList.add('missed');judged++;combo=0;flashJudge('MANQUÉ / MISS','TARD / LATE','miss');updateHud();}
+    function flashJudge(main,sub,kind){judge.className='judge '+kind;judge.querySelector('strong').textContent=main;judge.querySelector('small').textContent=sub;void judge.offsetWidth;judge.classList.add('show');}
+    function updateHud(){
+      scoreEl.textContent=String(Math.round(score)).padStart(6,'0');comboEl.textContent=combo;accuracyEl.textContent=(judged?quality/judged*100:100).toFixed(0)+'%';
+      comboBox.classList.remove('bump');void comboBox.offsetWidth;if(combo)comboBox.classList.add('bump');
+    }
+    function finish(){
+      running=false;cancelAnimationFrame(raf);chart.filter(note=>note.status==='active').forEach(note=>{note.status='miss';judged++;});chart.forEach(note=>note.el?.remove());updateHud();
+      const acc=judged?quality/judged*100:0;$('finalScore').textContent=Math.round(score).toLocaleString('fr-FR');$('finalCombo').textContent=bestCombo;$('finalAccuracy').textContent=acc.toFixed(0)+'%';
+      $('resultTitle').textContent=acc>92?'Maître du rythme / Rhythm master!':acc>75?'Bravo / Well done!':'Encore un essai / Try again!';showScreen('result');
+    }
+    function stopAndMenu(){running=false;cancelAnimationFrame(raf);lane.querySelectorAll('.note').forEach(note=>note.remove());showScreen('menu');}
+    function pressPad(type){const pad=pads.find(button=>button.dataset.hit===type);pad.classList.remove('pressed');void pad.offsetWidth;pad.classList.add('pressed');clearTimeout(pad.releaseTimer);pad.releaseTimer=setTimeout(()=>pad.classList.remove('pressed'),90);hit(type);}
+    document.querySelectorAll('.track-card').forEach(button=>button.addEventListener('click',()=>selectTrack(button.dataset.track)));
+    $('startBtn').addEventListener('click',startGame);$('replayBtn').addEventListener('click',startGame);$('songsBtn').addEventListener('click',stopAndMenu);$('songsMenuBtn').addEventListener('click',stopAndMenu);
+    pads.forEach(pad=>{pad.addEventListener('pointerdown',event=>{event.preventDefault();pressPad(pad.dataset.hit)},{passive:false});pad.addEventListener('click',event=>{if(event.detail===0)pressPad(pad.dataset.hit)});});
+    soundBtn.addEventListener('click',()=>{soundOn=!soundOn;soundBtn.textContent=soundOn?'♪':'×';soundBtn.setAttribute('aria-pressed',String(!soundOn));soundBtn.setAttribute('aria-label',soundOn?'Couper le son / Mute sound':'Activer le son / Enable sound');});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){running=false;cancelAnimationFrame(raf);showScreen('menu');reset();}});
+    window.taikoGame={start:startGame,hit,selectTrack,status:()=>({running,track:selected.id,score:Math.round(score),combo,bestCombo,accuracy:Number((judged?quality/judged*100:100).toFixed(1))})};
+    const context=document.modelContext;if(context?.registerTool){const lifecycle=new AbortController();
+      Promise.resolve(context.registerTool({name:'start_rhythm_game',title:'Commencer le jeu / Start game',description:'Commence ou recommence le morceau sélectionné / Starts or restarts the selected song.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(){startGame();return window.taikoGame.status();}},{signal:lifecycle.signal})).catch(()=>{});
+      Promise.resolve(context.registerTool({name:'read_rhythm_score',title:'Lire le score / Read score',description:'Lit le morceau, le score, la série et la précision / Reads the song, score, combo and accuracy.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:false},execute(){return window.taikoGame.status();}},{signal:lifecycle.signal})).catch(()=>{});
+    }
+    selectTrack('moonfire');if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  })();
+  </script>
+</body>
+</html>

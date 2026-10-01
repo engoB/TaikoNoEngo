@@ -1,0 +1,17 @@
+{
+  "name": "Taiko no Matsuri — Festival de taiko / Taiko Festival",
+  "short_name": "Taiko Matsuri",
+  "description": "Jeu de rythme tactile avec trois morceaux originaux / Touch rhythm game with three original songs.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
+  "background_color": "#6bd7f4",
+  "theme_color": "#ff5d6c",
+  "lang": "fr",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
